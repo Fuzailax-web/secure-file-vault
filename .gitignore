@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+.env
+vault/
+*.key
+*.log
+vault.salt
+secret.key
+password.hash
+.DS_Store
