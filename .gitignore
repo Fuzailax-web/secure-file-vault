@@ -5,7 +5,7 @@ __pycache__/
 vault/
 *.key
 *.log
-vault.salt
-secret.key
 password.hash
+vault.salt
+*.sha256
 .DS_Store
