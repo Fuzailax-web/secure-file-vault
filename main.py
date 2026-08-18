@@ -7,13 +7,16 @@ from vault import (
     decrypt_from_vault,
     delete_from_vault
 )
-
+from logger import logger
 
 password = login()
 
 if password is None:
+    logger.warning("Login failed")
     print("\n🔒 Access denied!")
     exit()
+
+logger.info("Login successful")
 
 
 try:
