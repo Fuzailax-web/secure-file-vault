@@ -165,6 +165,8 @@ def test_decrypt_from_vault_wrong_key(tmp_path, monkeypatch):
     assert not result
     assert not output_file.exists()
 
+
+
 def test_decrypt_from_vault_missing_file(tmp_path, monkeypatch):
     vault_dir = tmp_path / "vault"
     monkeypatch.setattr(vault, "VAULT_DIR", str(vault_dir))
@@ -172,18 +174,12 @@ def test_decrypt_from_vault_missing_file(tmp_path, monkeypatch):
 
     vault.initialize_vault()
 
-    key = crypto.derive_key(
-        "TestPassword123",
-        b"1234567890123456"
-    )
+    key = crypto.derive_key("TestPassword123", b"1234567890123456")
 
-    try:
-        result = vault.decrypt_from_vault("does_not_exist.txt.encrypted", key)
-    except Exception:
-        result = None
+    result = vault.decrypt_from_vault("does_not_exist.txt.encrypted", key)
 
-    assert not result
-    assert not (tmp_path / "does_not_exist.txt").exists()
+    assert result is None
+    assert not (tmp_path / "decrypted_does_not_exist.txt").exists()
 
 
 def test_delete_from_vault_cancelled(tmp_path, monkeypatch):
@@ -202,6 +198,47 @@ def test_delete_from_vault_cancelled(tmp_path, monkeypatch):
 
     result = vault.delete_from_vault("secret.txt.encrypted")
 
-    assert not result
+    assert result is False
     assert encrypted_file.exists()
     assert hash_file.exists()
+
+
+from cryptography.fernet import Fernet
+
+
+def test_decrypt_from_vault_blocks_path_traversal(tmp_path, monkeypatch):
+    vault_dir = tmp_path / "vault"
+    monkeypatch.setattr(vault, "VAULT_DIR", str(vault_dir))
+    monkeypatch.chdir(tmp_path)
+
+    vault.initialize_vault()
+
+    key = crypto.derive_key("TestPassword123", b"1234567890123456")
+
+    outside_file = tmp_path / "outside.txt.encrypted"
+    outside_file.write_bytes(Fernet(key).encrypt(b"outside data"))
+    vault.save_hash(
+        str(outside_file),
+        vault.calculate_hash(str(outside_file))
+    )
+
+    result = vault.decrypt_from_vault("../outside.txt.encrypted", key)
+
+    assert result is None
+
+
+def test_delete_from_vault_blocks_path_traversal(tmp_path, monkeypatch):
+    vault_dir = tmp_path / "vault"
+    monkeypatch.setattr(vault, "VAULT_DIR", str(vault_dir))
+
+    vault.initialize_vault()
+
+    outside_file = tmp_path / "outside.txt.encrypted"
+    outside_file.write_bytes(b"important data")
+
+    monkeypatch.setattr("builtins.input", lambda _: "y")
+
+    result = vault.delete_from_vault("../outside.txt.encrypted")
+
+    assert result is False
+    assert outside_file.exists()

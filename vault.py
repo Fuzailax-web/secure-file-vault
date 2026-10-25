@@ -134,6 +134,8 @@ def verify_file_integrity(vault_path):
 
 def decrypt_from_vault(filename, key):
 
+    filename = os.path.basename(filename)
+
     vault_path = os.path.join(
         VAULT_DIR,
         filename
@@ -228,6 +230,8 @@ def decrypt_from_vault(filename, key):
 
 
 def delete_from_vault(filename):
+
+    filename = os.path.basename(filename)
 
     vault_path = os.path.join(
         VAULT_DIR,
