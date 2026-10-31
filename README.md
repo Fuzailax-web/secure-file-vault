@@ -1,5 +1,7 @@
 # 🔐 Secure File Vault
 
+[![Tests](https://github.com/Fuzailax-web/secure-file-vault/actions/workflows/tests.yml/badge.svg)](https://github.com/Fuzailax-web/secure-file-vault/actions/workflows/tests.yml)
+
 A Python file vault with a web interface and a command-line interface. It protects sensitive files with password-based authentication, authenticated encryption, and integrity verification. Everything runs locally on your own computer.
 
 The project demonstrates core cybersecurity concepts: password hashing, key derivation, authenticated encryption, tamper detection, session management, login rate limiting, input validation, and security logging.
