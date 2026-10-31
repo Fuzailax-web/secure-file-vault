@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Secure File Vault</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span aria-hidden="true">🔐</span> Secure File Vault</div>
+    <button type="button" id="logout-btn" class="ghost" hidden>Log out</button>
+  </header>
+
+  <main>
+    <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+
+    <!-- Setup / login -->
+    <section id="auth-view" class="card narrow" hidden>
+      <h1 id="auth-title"></h1>
+      <p id="auth-hint" class="muted"></p>
+      <form id="auth-form">
+        <label for="password">Master password</label>
+        <input id="password" type="password" maxlength="256" required>
+        <button type="submit" id="auth-submit" class="primary"></button>
+      </form>
+    </section>
+
+    <!-- Vault -->
+    <section id="vault-view" hidden>
+      <div class="card">
+        <h2>Add a file</h2>
+        <form id="upload-form">
+          <label id="dropzone" class="dropzone" for="file-input">
+            <input id="file-input" type="file">
+            <span id="drop-text">Choose a file or drop it here (max 10 MB)</span>
+          </label>
+          <button type="submit" class="primary">Encrypt and store</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Vault files</h2>
+        <p id="empty" class="muted" hidden>The vault is empty.</p>
+        <div class="table-wrap">
+          <table id="files-table" hidden>
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Size</th>
+                <th scope="col">Added</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="files-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <h2>Security log</h2>
+          <button type="button" id="log-btn" class="ghost">Show log</button>
+        </div>
+        <pre id="log-view" hidden></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="muted">
+    Files are encrypted on this computer. Your password is never stored, only a bcrypt hash.
+  </footer>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>

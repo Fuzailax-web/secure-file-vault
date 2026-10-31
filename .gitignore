@@ -11,3 +11,4 @@ secret.txt
 secret.txt.encrypted
 test.txt
 decrypted_*
+vault_backup*/
